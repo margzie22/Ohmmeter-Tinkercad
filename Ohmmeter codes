@@ -1,0 +1,37 @@
+#include <Adafruit_LiquidCrystal.h>
+
+Adafruit_LiquidCrystal lcd(0);  // Initialize the LCD
+
+const int analogPin = A0;
+const float Vin = 5.0;
+const float R2 = 2000.0;  // 2kΩ known resistor
+float R1 = 0;  // Store calculated resistance
+
+void setup() {
+    lcd.begin(16, 2);
+    lcd.print("Ohmmeter Ready!");
+    delay(2000);  // Give time for setup message
+
+    int raw = analogRead(analogPin);  // Read once
+
+    if (raw > 0) {  // Avoid division by zero
+        float Vout = (Vin * raw) / 1023.0;
+        R1 = ((R2 * (Vin - Vout)) / Vout);
+        
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("R1: ");
+        lcd.print(R1);
+        lcd.print(" Ohm");
+    } else {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Error: Vout=0");
+    }
+
+    lcd.setBacklight(1);  // Keep backlight ON
+}
+
+void loop() {
+    // Loop is empty to prevent re-measuring
+}
